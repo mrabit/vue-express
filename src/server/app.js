@@ -5,6 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var history = require('connect-history-api-fallback');
+
 var app = express();
 
 // view engine setup
@@ -19,17 +20,17 @@ app.use(bodyParser.urlencoded({
     extended: false
 }));
 app.use(cookieParser());
-app.use(history({
-    rewrites: [
-      {
-        from: /^(\/[^\s]*\.html|\/$)/,
-        to: '/'
-      }
-    ]
-  }));
-app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', require('./router'));
+
+app.use(history({
+    rewrites: [{
+        from: /^(\/[^\s]*\.html|\/$)/,
+        to: '/'
+    }]
+}));
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 if (process.env.NODE_ENV == 'development') {
     var webpack = require('webpack');
@@ -49,20 +50,13 @@ if (process.env.NODE_ENV == 'development') {
     app.use(webpackHotMiddleware(compiler))
 }
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
-    //判断是否请求html页面,转发到前端
-    var regexp = /(^\/[^\s]*\.html|^\/$)/;
-    if (regexp.test(req.url)) {
-        res.status(200);
-        res.render(process.env.NODE_ENV == 'development' ? 'index_dev' : 'index');
-        return;
-    }
+app.use(function (req, res, next) {
     res.status(404);
     res.render('404');
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
     // set locals, only providing error in development
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};
