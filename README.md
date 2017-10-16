@@ -32,9 +32,12 @@ Vue + Express 构建项目
 ├── src
 │   ├── client
 │   │   ├── App.vue
+│   │   ├── assets
+│   │   │   └── logo.png
 │   │   ├── router
 │   │   │   └── index.js
 │   │   ├── components
+│   │   │   ├── notFound.vue
 │   │   │   └── Hello.vue
 │   │   └── main.js
 │   └── server
@@ -43,8 +46,9 @@ Vue + Express 构建项目
 │       ├── index.js
 │       ├── router.js
 │       ├── public
-│       │   ├── javascripts
-│       │   └── stylesheets
+│       │   └── assets
+│       │       │── stylesheets
+│       │       └── javascripts
 │       └── views
 │           ├── index.ejs
 │           ├── index_dev.ejs

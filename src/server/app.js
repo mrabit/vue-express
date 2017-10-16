@@ -4,7 +4,6 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var history = require('connect-history-api-fallback');
 
 var app = express();
 
@@ -22,14 +21,7 @@ app.use(bodyParser.urlencoded({
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(history({
-    rewrites: [{
-        from: '(^\/[^\s]*\.html|^\/$)',
-        to: '/'
-    }]
-}));
 app.use('/', require('./router'));
-
 
 if (process.env.NODE_ENV == 'development') {
     var webpack = require('webpack');
@@ -37,7 +29,7 @@ if (process.env.NODE_ENV == 'development') {
     var webpackHotMiddleware = require('webpack-hot-middleware');
     var config = require('../../build/webpack.dev.conf');
 
-    const compiler = webpack(config)
+    const compiler = webpack(config);
 
     app.use(webpackDevMiddleware(compiler, {
         publicPath: config.output.publicPath,
@@ -50,6 +42,13 @@ if (process.env.NODE_ENV == 'development') {
 }
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
+    //判断是否请求html页面,转发到前端
+    var regexp = /(^\/[^\s]*\.html|^\/$)/;
+    if (regexp.test(req.url)) {
+        res.status(200);
+        res.render(process.env.NODE_ENV == 'development' ? 'index_dev' : 'index');
+        return;
+    }
     res.status(404);
     res.render('404');
 });
