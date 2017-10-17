@@ -21,14 +21,14 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(cookieParser());
 
-app.use('/', require('./router'));
-
 app.use(history({
     rewrites: [{
         from: /^(\/[^\s]*\.html|\/$)/,
         to: '/'
     }]
 }));
+
+app.use('/', require('./router'));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
